@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}SEARCH{% endblock %}
+
+{% block content %}
+<div>
+    <form action="" method='get'>
+        <input type="text" name="q" id="search_bar" placeholder="Search...">
+        <label for="search_bar">Search</label>
+        
+        <select name="" id="type">
+            <option value="web">web</option>
+            <option value="isch">Image_Search</option>
+            <option value="nws">News</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if results %}
+    <h2>Results:</h2>
+    <ul>
+        {% for item in results.get %}
+        <li>
+            <a href="{{ item.url }}">{{ item.title }}</a><br>
+            {{ item.description }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}
