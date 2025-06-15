@@ -2,30 +2,97 @@
 
 {% block title %}SEARCH{% endblock %}
 
-{% block content %}
-<div>
-    <form action="" method='get'>
-        <input type="text" name="q" id="search_bar" placeholder="Search...">
-        <label for="search_bar">Search</label>
-        
-        <select name="" id="type">
-            <option value="web">web</option>
-            <option value="isch">Image_Search</option>
-            <option value="nws">News</option>
-        </select>
-        <button type="submit">Search</button>
-    </form>
+{% block script %}
+<!-- 🌗 Dark Mode Toggle Logic (with localStorage) -->
+<script>
+  // On page load, set theme based on localStorage or system preference
+  if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+  } else {
+      document.documentElement.classList.remove('dark');
+  }
 
-    {% if results %}
-    <h2>Results:</h2>
-    <ul>
-        {% for item in results.get %}
-        <li>
-            <a href="{{ item.url }}">{{ item.title }}</a><br>
-            {{ item.description }}
+  // Toggle function
+  function toggleTheme() {
+      if (document.documentElement.classList.contains('dark')) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+          document.getElementById('toggle-text').innerText = '☀️';
+      } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+          document.getElementById('toggle-text').innerText = '🌙';
+      }
+  }
+</script>
+{% endblock %}
+
+{% block content %}
+
+
+<!-- 🔄 Theme Toggle Button -->
+<div class="fixed top-4 right-4 z-50">
+  <button onclick="toggleTheme()" class="flex items-center bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-1 rounded-full shadow-lg transition-all">
+    <span id="toggle-text" class="text-xl">
+      <!-- Initial icon will be updated by JS -->
+      ☀️
+    </span>
+    <span class="ml-2 text-sm hidden sm:inline">Toggle Theme</span>
+  </button>
+</div>
+
+<!-- 🎨 Main Background Container -->
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 transition-all duration-500 p-6">
+
+  <!-- 🔎 Search Form -->
+  <form action="" method="GET" class="w-full max-w-2xl bg-white dark:bg-gray-900 shadow-xl rounded-xl p-6 flex flex-col md:flex-row items-center gap-4 transition-all duration-300">
+      
+
+      <!-- Search Field -->
+      <div class="relative w-full md:flex-1">
+          <label for="search_query" class="sr-only">Search</label>
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+          </div>
+          <input type="text" id="search_query" name="q" placeholder="Search whatever you want..." required
+              class="w-full pl-10 pr-4 py-2 rounded-lg text-sm border border-gray-300 text-gray-900 bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:ring-blue-500" />
+      </div>
+
+      <!-- Search Type Dropdown -->
+      <div class="w-full md:w-48">
+          <label for="search_type" class="sr-only">Search Type</label>
+          <select id="search_type" name="type" required
+              class="w-full py-2 px-3 border-b-2 border-gray-300 bg-transparent text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:border-blue-500 dark:border-gray-600 dark:focus:border-blue-500">
+              <option value="web" selected>Web</option>
+              <option value="isch">Image</option>
+              <option value="nws">News</option>
+          </select>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit"
+          class="flex items-center justify-center px-4 py-2 bg-blue-700 text-white text-sm font-medium rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition">
+          <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Search
+      </button>
+  </form>
+</div>
+<div>
+    {% if results.organic %}
+    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mt-8">Results:</h2>
+    <ul class="mt-4 space-y-4">
+        {% for item in results.organic %}
+        <li class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <a href="{{ item.url }}" class="text-blue-600 dark:text-blue-400 font-medium text-lg">{{ item.title }}</a><br>
+            <p class="text-gray-700 dark:text-gray-300 text-sm mt-1">{{ item.description }}</p>
         </li>
         {% endfor %}
     </ul>
     {% endif %}
+
 </div>
 {% endblock %}

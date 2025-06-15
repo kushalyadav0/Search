@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 from .Zenserp_api import Perform_search 
 
@@ -13,8 +12,7 @@ def search_view(request):
         query = request.GET.get('q')
         search_type=request.GET.get('type', 'web')
         results = Perform_search(query, search_type)
-        results['organic'] = results.get('organic', [])
 
-        return render(request,'search.html', {'results':results})
+        return render(request,'search.html', {'results': results})
 
-    return render(request,'search.html', {'results':results})
+    return render(request, 'search.html', {'results':results})
